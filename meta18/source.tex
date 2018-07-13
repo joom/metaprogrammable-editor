@@ -103,7 +103,7 @@
 \setenumerate{label=(\arabic*), parsep=0pt}
 
 \begin{document}
-\title[A Metaprogrammable Editor Mode for Type-Directed Editing]{A Metaprogrammable Editor Mode\\ for Type-Directed Editing}
+\title[A Metaprogrammable Editor Mode]{A Metaprogrammable Editor Mode}
 
 \author{Joomy Korkut}
 \orcid{0000-0001-6784-7108}
@@ -118,20 +118,21 @@
 \renewcommand{\shortauthors}{Joomy Korkut}
 
 \begin{abstract}
-  Type-directed editor actions in languages like Idris and Agda allow users to
-  ask questions to their editor about incomplete programs, and get
+  Type-directed \emph{editor action}s in languages like Idris and Agda allows programmers to
+  ask their editors questions about incomplete programs, and get
   meaningful answers based on types of the missing parts.
   This turns programming into a conversation between the programmer and the
   compiler, where the editor acts as an intermediary.
-  Programmers used to be limited in the kinds of questions they could ask,
-  because all editor actions were built-in to the editor mode and the compiler,
-  and adding new ones required hacking on the compiler.
-  Recent work on extensible editor actions~\cite{extensible} in Idris allowed
-  leveraging metaprogramming techniques to specify how the
-  compiler should answer \emph{custom} questions, but required
-  writing code in the editor language (Emacs Lisp, VimL etc.) to glue the
-  compiler and the editor interface. Our work allows replacing this glue
-  code with code written in Idris itself.
+  Until recently, these languages supported a limited set of questions built-in
+  to the editor mode and the compiler.  Recent work on extensible editor
+  actions~\cite{extensible} in Idris leveraged metaprogramming
+  techniques to specify how the compiler should answer \emph{custom} questions,
+  but that required writing code in the editor language (Emacs Lisp, VimL etc.) to
+  glue the compiler and the editor interface. Our work allows replacing this
+  glue code with code written in Idris itself: We defined a domain-specific
+  language in Idris, which provides a monadic interface for editor commands and
+  lets users compose these actions in meaningful ways to define more complex
+  editor commands, enough to glue the compiler and the editor interface.
 \end{abstract}
 
 %
