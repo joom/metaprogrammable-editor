@@ -103,7 +103,8 @@
 \setenumerate{label=(\arabic*), parsep=0pt}
 
 \begin{document}
-\title[A Metaprogrammable Editor Mode]{A Metaprogrammable Editor Mode}
+\title{Scrap your Emacs Lisp}
+\subtitle{An editor command DSL in Idris that runs in Emacs}
 
 \author{Joomy Korkut}
 \orcid{0000-0001-6784-7108}
@@ -118,7 +119,7 @@
 \renewcommand{\shortauthors}{Joomy Korkut}
 
 \begin{abstract}
-  Type-directed \emph{editor action}s in languages like Idris and Agda allows programmers to
+  Type-directed editor actions in languages like Idris and Agda allows programmers to
   ask their editors questions about incomplete programs, and get
   meaningful answers based on types of the missing parts.
   This turns programming into a conversation between the programmer and the
@@ -167,15 +168,15 @@
 
 Most programming languages with rich type systems come with support for popular
 editors like Emacs and Vim. The infrastructure for this support consists of
-two different parts~\cite{editTimeTactics}:
+two parts~\cite{editTimeTactics}:
 
 \begin{enumerate}
   \item a plugin to the editor, often written in the script language of the
     editor, such as Emacs Lisp or VimL. This is the \emph{front-end} of the
     editor mode.
   \item a separate program that does the heavy lifting of the editing features
-    that work with the language itself.  \mt{ghc-mod} in Haskell,
-    \mt{agda-mode} in Agda, and the Idris compiler itself would be perfect
+    that work with the language itself.  \mt{ghc-mod} for Haskell,
+    \mt{agda-mode} for Agda, and the Idris compiler itself would be perfect
     examples for this. This is the \emph{back-end} of the editor mode.
 \end{enumerate}
 
