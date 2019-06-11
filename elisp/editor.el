@@ -46,11 +46,10 @@
   )
 )
 
-
 (defun run-edit (s)
   (let*
     ((res (proof-shell-invisible-cmd-get-result
-            (concat "Eval cbn in (" s ")."))))
+           (concat "Eval cbn in (Editor.right_assoc (" s "))."))))
     (parse-response res)))
 
-(defun run (s) (run-edit (concat "(Editor.right_assoc (" s "))")))
+(defun run (s) (run-edit s))

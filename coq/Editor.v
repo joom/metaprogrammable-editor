@@ -155,3 +155,5 @@ Eval cbn in (Editor.shift_char).
 Eval cbn in (Editor.right_assoc Editor.shift_char).
 
 End Editor.
+
+hello

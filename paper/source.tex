@@ -31,6 +31,7 @@
 \usepackage{todonotes}
 \usepackage{tikz-cd}
 \usepackage{adjustbox}
+
 % Idris
 % in REPL run `:pp latex 80 <expr>` to get the colored verbatim
 
@@ -135,7 +136,7 @@
 % \emph{This paper uses colors in the example code.}
 
 \vspace{-1em}
-\section{Introduction}
+\section{Motivation and Description}
 
   Interactive theorem provers Coq, Agda and Idris allow programmers to
   ask questions about incomplete programs (or proofs) to Emacs, and get
@@ -147,8 +148,8 @@
   fundamentally different; it is based on stepping through proofs.
   Specifically, Coq users step through vernacular commands and tactics.
   Vernacular commands are the primary way to interact with the program as a whole.
-  This can involve checking the types of terms or definitions, adding new
-  definitions, loading new files, opening and defining modules and many others.
+  They can check the types of terms or definitions, add new
+  definitions, load new files, open and define modules and do many other tasks.
   Coq users can even ask Coq to ensure that a given vernacular command will
   \kw{Fail}, or they can \kw{Time} how long a command will take.
 
@@ -164,8 +165,8 @@
   Coq has a different story about its ability to answer new kinds of questions,
   since users can define new vernacular commands in ML plugins.
   However, even vernacular commands cannot achieve rich editor actions that
-  involve changing text in the buffer.
-  Vernacular commands can only print information on the screen.
+  involve changing text in the buffer,
+  they can only print information on the screen.
   Furthermore, it is impossible to define new vernacular commands in
   Coq itself.
 
@@ -181,7 +182,7 @@
   execute. Emacs and Coq processes will communicate back and forth until the
   entire computation is completed.
 
-  The simplest (and minimized) form of this eDSL is an inductive data type, as defined below:
+  The simplest (and minimized) form of this eDSL is an inductive data type as defined below:
 
 \begin{Verbatim}
   \kw{Inductive} \ty{edit} : \ty{Type} -> \ty{Type} :=
@@ -216,21 +217,20 @@ Using this, we can now define an editor action that takes the character under th
 \end{Verbatim}
 
 Now you can evaluate the Emacs Lisp command \texttt{(\fn{run} \dt{"shift"})} and
-observe that it indeed replaces the character under the cursor. If you have the word \texttt{h\cursor{e}llo} with the cursor on \texttt{e}, it should become \texttt{h\cursor{f}llo}.
+observe that it indeed replaces the character under the cursor and moves the cursor. \texttt{h\cursor{e}llo} should become \texttt{hf\cursor{l}lo}.
 
 \section{Implementation}
 
 We need to write an interpreter in Emacs Lisp that looks up the definition of
 the required editor action, executes the first atomic editor action, and sends
 the result of the atomic action and the rest of the computation back to Coq.
-This is exactly what the \fn{run} function in Emacs Lisp does. Using Proof
+This is exactly what our \fn{run} function in Emacs Lisp does. Using Proof
 General's internals, it sends a vernacular command to Coq, of the form
 \texttt{\kw{Eval} cbn \kw{in} (...).}
-
 In order to keep the interpreter in Emacs Lisp as simple as possible, we can
 make sure that the term sent to Emacs has an atomic editor action right in the
-beginning.
-This means that the action sent must be atomic itself,
+beginning;
+the action must be atomic itself,
 or must have the form \texttt{\dt{bind} <atomic> (\kw{fun} \bn{x} => ...)}.
 
 At this point, associativity of bind comes to our help.
@@ -242,10 +242,13 @@ Therefore, the vernacular command run by the our Emacs Lisp function called \fn{
 \begin{Verbatim}
   \kw{Eval} cbn \kw{in} (\fn{right_assoc} \fn{shift}).
 \end{Verbatim}
-Our function then parses the response from Coq, which would be of the form
+Our interpreter then parses the response from Coq, which would be of the form
 \begin{Verbatim}
-  = \dt{bind} \dt{get_char} (\kw{fun} \bn{x} => \dt{bind }\dt{remove_char} (\kw{fun} _ => ...) ) : \ty{edit unit}
+  = \dt{bind} \dt{get_char} (\kw{fun} \bn{x} => \dt{bind }\dt{remove_char} (\kw{fun} _ => ...)) : \ty{edit unit}
 \end{Verbatim}
+The interpreter in Emacs Lisp will detect that the first atomic action is \dt{get\_char}, then get the character under the cursor, and create a string that represents the term \texttt{(\kw{fun} \bn{x} => \dt{bind }\dt{remove\_char} (\kw{fun} \_ => ...)) \dt{"e"}}, and send that back to Coq with the same vernacular command. This back and forth communication will continue until the response received from Coq only contains a single atomic action and no \dt{bind}s.
+
+Our prototype implementation is available at \texttt{\url{http://github.com/joom/metaprogrammable-editor}}. While this implementation is brittle and lacking in helpful error messages, it shows the capabilities of such a mechanism.
 
 
 
