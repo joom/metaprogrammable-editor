@@ -1607,7 +1607,7 @@ Computing Machinery]
     \if@printcopyright
       \copyright\ \@copyrightyear\ \@copyrightowner\\
     \else
-     \@copyrightyear.\
+     Submitted to the Coq Workshop \@copyrightyear, at ITP 2019 in Portland, Oregon, USA.\
     \fi
     \if@ACM@manuscript
       Manuscript submitted to ACM\\
@@ -1628,9 +1628,9 @@ Computing Machinery]
           \fi\\
         \else
           \if@ACM@journal
-            \@permissionCodeOne/\@acmYear/\@acmMonth-ART\@acmArticle
-            \ifx\@acmPrice\@empty\else\ \$\@acmPrice\fi\\
-            \@formatdoi{\@acmDOI}%
+            % \@permissionCodeOne/\@acmYear/\@acmMonth-ART\@acmArticle
+            % \ifx\@acmPrice\@empty\else\ \$\@acmPrice\fi\\
+            % \@formatdoi{\@acmDOI}%
           \else % Conference
             \ifx\@acmISBN\@empty\else ACM~ISBN~\@acmISBN
             \ifx\@acmPrice\@empty.\else\dots\$\@acmPrice\fi\\\fi

@@ -1,2 +1,2 @@
 # metaprogrammable-editor
-Documents (TeX, slides etc.) for the editor side metaprogramming of edit-time tactics in Idris.
+Documents (TeX, slides etc.) and code for the editor side metaprogramming in Coq.

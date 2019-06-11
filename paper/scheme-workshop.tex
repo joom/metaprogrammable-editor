@@ -1,0 +1,16 @@
+Type-directed editor actions in languages like Idris and Agda allows programmers to
+ask their editors questions about incomplete programs, and get
+meaningful answers based on types of the missing parts.
+This turns programming into a conversation between the programmer and the
+compiler, where the editor acts as an intermediary.
+Until recently, these languages supported a limited set of questions built-in
+to the editor mode and the compiler.
+Recent work on extensible editor actions~\cite{extensible} in Idris leveraged
+metaprogramming techniques to specify how the compiler should answer
+\emph{custom} questions, but that required writing code in the editor language
+(Emacs Lisp, VimL etc.) to glue the compiler and the editor interface. Our work
+allows replacing this glue code with code written in Idris itself: We defined a
+domain-specific language in Idris, which provides a monadic interface for
+editor commands and lets users compose these actions in meaningful ways to
+define more complex editor commands, enough to glue the compiler and the editor
+interface.

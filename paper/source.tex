@@ -1,0 +1,370 @@
+\documentclass[acmlarge]{acmart}
+
+% Copyright
+\setcopyright{none}
+%\setcopyright{acmcopyright}
+% \setcopyright{acmlicensed}
+%\setcopyright{rightsretained}
+%\setcopyright{usgov}
+%\setcopyright{usgovmixed}
+%\setcopyright{cagov}
+%\setcopyright{cagovmixed}
+
+% DOI
+\acmDOI{}
+
+% ISBN
+\acmISBN{}
+
+% %Conference
+% \acmConference[Scheme'19]{the 3rd ACM SIGPLAN International Workshop on Meta-Programming Techniques and Reflection}{November 4-9, 2018}{Boston, MA, USA}
+\acmYear{2019}
+\copyrightyear{2019}
+\acmPrice{}
+\acmSubmissionID{}
+
+\usepackage{enumerate, enumitem}
+\usepackage{fancyvrb}
+\fvset{commandchars=\\\{\}}
+\usepackage{xcolor}
+\usepackage{setspace}
+\usepackage{todonotes}
+\usepackage{tikz-cd}
+\usepackage{adjustbox}
+% Idris
+% in REPL run `:pp latex 80 <expr>` to get the colored verbatim
+
+\usepackage{amssymb}
+\newcommand\fakeslant[1]{%
+  \special{pdf: literal 1 0 0.167 1 0 0 cm}#1\special{pdf: literal 1 0 -0.167 1 0 0 cm}}
+\definecolor{IdrisRed}{HTML}{BC0045}
+\definecolor{IdrisBlue}{HTML}{0000d6}
+\definecolor{IdrisGreen}{HTML}{008b00}
+\definecolor{IdrisLilac}{HTML}{AC22BF}
+\definecolor{IdrisYellow}{HTML}{E16800}
+\definecolor{IdrisLightBlue}{HTML}{A4CDFF}
+\definecolor{IdrisDarkYellow}{HTML}{E5AF3F}
+\newcommand{\IdrisData}[1]{\textcolor{IdrisRed}{#1}}
+\newcommand{\IdrisType}[1]{\textcolor{IdrisBlue}{#1}}
+\newcommand{\IdrisBound}[1]{\textcolor{IdrisLilac}{\fakeslant{#1}}}
+\newcommand{\IdrisFunction}[1]{\textcolor{IdrisGreen}{#1}}
+\newcommand{\IdrisMetavar}[1]{\textcolor{IdrisYellow}{#1}}
+\newcommand{\IdrisKeyword}[1]{{\textbf{#1}}}
+\newcommand{\IdrisImplicit}[1]{{\itshape \IdrisBound{#1}}}
+\newcommand{\ty}[1]{\IdrisType{\texttt{#1}}}
+\newcommand{\kw}[1]{\IdrisKeyword{\texttt{#1}}}
+\newcommand{\fn}[1]{\IdrisFunction{\texttt{#1}}}
+\newcommand{\dt}[1]{\IdrisData{\texttt{#1}}}
+\newcommand{\bn}[1]{\IdrisBound{\texttt{#1}}}
+\newcommand{\cm}[1]{\textcolor{darkgray}{\texttt{#1}}}
+\newcommand{\hole}[1]{\IdrisMetavar{\texttt{?}\IdrisMetavar{\texttt{#1}}}}
+\newcommand{\Elab}{\ty{Elab}}
+\newcommand{\IO}{\ty{IO}}
+\newcommand{\String}{\ty{String}}
+\newcommand{\TT}{\ty{TT}}
+\newcommand{\Raw}{\ty{Raw}}
+\newcommand{\Editorable}{\ty{Editorable}}
+\newcommand{\TyDecl}{\ty{TyDecl}}
+\newcommand{\FunDefn}{\ty{FunDefn}}
+\newcommand{\FunClause}{\ty{FunClause}}
+\newcommand{\Edit}{\ty{Edit}}
+\newcommand{\sexp}{\mbox{S-expression}} %don't hyphenate
+\newcommand{\mt}[1]{\mbox{\texttt{#1}}}
+\newcommand{\Prim}[1]{\dt{Prim\_\_#1}}
+\newcommand{\qt}[1]{\kw{\`{}(}{#1}\kw{)}} %quotation `(...)
+\newcommand{\antiqt}{\kw{\textasciitilde}} %antiquotation ~
+
+% Replicating selecting regions in the editor:
+% \newcommand{\select}[1]{\fcolorbox{black}{IdrisLightBlue}{#1}}
+% A version of select without any space around the box.
+% Hard to see in black & white so I chose the one with the space
+\newcommand{\select}[1]{{\setlength{\fboxsep}{0.05cm}\fcolorbox{black}{IdrisLightBlue}{#1}}}
+\newcommand{\cursor}[1]{{\setlength{\fboxsep}{0.03cm}\fcolorbox{black}{IdrisDarkYellow}{#1}}}
+
+\newcommand{\Red}[1]{{\color{red} #1}}
+\newcommand{\TODO}[1]{{\color{red}{[TODO: #1]}}}
+\newcommand{\FYI}[1]{{\color{green}{[FYI: #1]}}}
+\newcommand{\forceindent}{\hspace{\parindent}}
+
+\usepackage[normalem]{ulem}
+\makeatletter
+\newcommand\colorwave[1][blue]{\bgroup \markoverwith{\lower3.5\p@\hbox{\sixly \textcolor{#1}{\char58}}}\ULon}
+\font\sixly=lasy6 % does not re-load if already loaded, so no memory problem.
+\makeatother
+\newcommand{\IdrisError}[1]{\colorwave[red]{#1}}
+
+% \sloppy
+\tolerance=1
+\emergencystretch=\maxdimen
+\hyphenpenalty=10000
+\hbadness=10000
+
+%% Get rid of sloppy line breaks in \citet citations
+\bibpunct{\nolinebreak[4][}{]}{,}{n}{}{,}
+\makeatletter
+\renewcommand*{\NAT@spacechar}{~}
+\makeatother
+
+
+\setenumerate{label=(\arabic*), parsep=0pt}
+
+\begin{document}
+\title{Commanding Emacs from Coq}
+\subtitle{An editor command eDSL in Coq, interpreted in Emacs Lisp}
+
+\author{Joomy Korkut}
+\orcid{0000-0001-6784-7108}
+\affiliation{
+  \institution{Princeton University}
+  \city{Princeton}
+  \state{New Jersey}
+  \country{USA}
+}
+\email{joomy@cs.princeton.edu}
+
+\renewcommand{\shortauthors}{Joomy Korkut}
+
+% \keywords{Metaprogramming, interactive theorem proving, Emacs, macros}
+
+\settopmatter{printacmref=false}
+\fancyfoot{}
+\maketitle
+\thispagestyle{empty}
+\pagestyle{empty}
+
+% \emph{This paper uses colors in the example code.}
+
+\vspace{-1em}
+\section{Introduction}
+
+  Interactive theorem provers Coq, Agda and Idris allow programmers to
+  ask questions about incomplete programs (or proofs) to Emacs, and get
+  meaningful answers based on types of the missing parts.
+  This turns programming into a conversation between
+  programmers and their compilers, where Emacs acts as an intermediary.
+  In Agda and Idris these questions are asked through editor actions usually
+  involving holes in the program. Coq's interactivity model, however, is
+  fundamentally different; it is based on stepping through proofs.
+  Specifically, Coq users step through vernacular commands and tactics.
+  Vernacular commands are the primary way to interact with the program as a whole.
+  This can involve checking the types of terms or definitions, adding new
+  definitions, loading new files, opening and defining modules and many others.
+  Coq users can even ask Coq to ensure that a given vernacular command will
+  \kw{Fail}, or they can \kw{Time} how long a command will take.
+
+  In all of the aforementioned languages, programmers are limited in the kinds
+  of questions they can ask.
+  Recent work on extensible editor actions in Idris~\cite{extensible} and
+  Hazel~\cite{DBLP:conf/snapl/OmarVHSGAH17,rayObt} leverages
+  metaprogramming techniques to specify how the compiler should answer
+  custom questions, but that requires writing code in the editor language
+  (Emacs Lisp etc.) to glue the compiler and the editor interface because
+  metaprograms can only command the compiler and not the editor itself.
+
+  Coq has a different story about its ability to answer new kinds of questions,
+  since users can define new vernacular commands in ML plugins.
+  However, even vernacular commands cannot achieve rich editor actions that
+  involve changing text in the buffer.
+  Vernacular commands can only print information on the screen.
+  Furthermore, it is impossible to define new vernacular commands in
+  Coq itself.
+
+  We will describe \emph{editor metaprogramming}, a
+  novel idea of writing metaprograms that command the editor.
+  We define a monadic embedded domain-specific language (eDSL) for editor
+  commands in Coq, which enables composing these commands in meaningful ways,
+  with the full power of Coq!
+  We write an interpreter for this eDSL in Emacs Lisp, which will execute one
+  atomic editor action, such as deleting a character or moving the cursor,  and
+  send the rest of the computation back to Coq for evaluation, which then
+  results in Coq finding another atomic editor action that Emacs Lisp must
+  execute. Emacs and Coq processes will communicate back and forth until the
+  entire computation is completed.
+
+  The simplest (and minimized) form of this eDSL is an inductive data type, as defined below:
+
+\begin{Verbatim}
+  \kw{Inductive} \ty{edit} : \ty{Type} -> \ty{Type} :=
+  | \dt{ret} : forall \{\bn{a}\}, \bn{a} -> \ty{edit} \bn{a}
+  | \dt{bind} : forall \{\bn{a} \bn{b}\}, \ty{edit} \bn{a} -> (\bn{a} -> \ty{edit} \bn{b}) -> \ty{edit} \bn{b}
+  | \dt{insert_char} : \ty{ascii} -> \ty{edit} \ty{unit}
+  | \dt{remove_char} : \ty{edit} \ty{unit}
+  | \dt{get_char} : \ty{edit} \ty{ascii}
+  | \dt{move_left} : \ty{edit} \ty{unit}
+  | \dt{move_right} : \ty{edit} \ty{unit}.
+\end{Verbatim}
+
+Each atomic editor action we want to have is a constructor in this data type. For example, \dt{insert\_char} inserts a given \ty{ascii} character to the buffer right before the cursor, \dt{remove\_char} deletes one character in the buffer right after the cursor, and \dt{get\_char} gives you the character under the cursor.
+
+The \dt{ret} and \dt{bind} constructors are a common trick that is used to design monadic eDSLs quickly. Once we have them, defining a \ty{Monad} type class instance of the \ty{edit} type is straightforward:
+
+\begin{Verbatim}
+  \kw{Instance} \fn{Monad_edit} : \ty{Monad} \ty{edit} := \{\fn{ret} \bn{a} := @\dt{ret} \bn{a} ; \fn{bind} \bn{a} \bn{b} := @\dt{bind} \bn{a} \bn{b}\}.
+\end{Verbatim}
+
+Now that have a \ty{Monad} instance for \ty{edit}, we can compose editor actions to make larger building blocks. For instance, let's build an editor action that replaces the character under the cursor:
+
+\begin{Verbatim}
+  \kw{Definition} \fn{replace_char} (\bn{c} : \ty{ascii}) : \ty{edit} \ty{unit} := \dt{remove_char} ;; \dt{insert_char} \bn{c}.
+\end{Verbatim}
+
+Using this, we can now define an editor action that takes the character under the cursor, shifts is ASCII value by one, and replaces it with the same character:
+
+\begin{Verbatim}
+  \kw{Definition} \fn{shift} : \ty{edit} \ty{unit} :=
+    \bn{c} <- \dt{get_char} ;; \fn{replace_char} (\fn{ascii_of_N} (\dt{1} \fn{+} \fn{N_of_ascii} \bn{c})) ;; \dt{move_right}.
+\end{Verbatim}
+
+Now you can evaluate the Emacs Lisp command \texttt{(\fn{run} \dt{"shift"})} and
+observe that it indeed replaces the character under the cursor. If you have the word \texttt{h\cursor{e}llo} with the cursor on \texttt{e}, it should become \texttt{h\cursor{f}llo}.
+
+\section{Implementation}
+
+We need to write an interpreter in Emacs Lisp that looks up the definition of
+the required editor action, executes the first atomic editor action, and sends
+the result of the atomic action and the rest of the computation back to Coq.
+This is exactly what the \fn{run} function in Emacs Lisp does. Using Proof
+General's internals, it sends a vernacular command to Coq, of the form
+\texttt{\kw{Eval} cbn \kw{in} (...).}
+
+In order to keep the interpreter in Emacs Lisp as simple as possible, we can
+make sure that the term sent to Emacs has an atomic editor action right in the
+beginning.
+This means that the action sent must be atomic itself,
+or must have the form \texttt{\dt{bind} <atomic> (\kw{fun} \bn{x} => ...)}.
+
+At this point, associativity of bind comes to our help.
+We know that \texttt{\dt{bind} (\dt{bind} \bn{m} \bn{f}) \bn{g}}
+is equivalent to \texttt{\dt{bind} \bn{m} (\kw{fun} x => \dt{bind} (\bn{f} \bn{x}) \bn{g})}.
+If we repeatedly apply this transformation to composed editor actions, that would make all editor actions fit the form we require in our interpreter in Emacs Lisp. The function that does the right association transformation is written in Coq; we can call it \fn{right\_assoc}.
+
+Therefore, the vernacular command run by the our Emacs Lisp function called \fn{run} is
+\begin{Verbatim}
+  \kw{Eval} cbn \kw{in} (\fn{right_assoc} \fn{shift}).
+\end{Verbatim}
+Our function then parses the response from Coq, which would be of the form
+\begin{Verbatim}
+  = \dt{bind} \dt{get_char} (\kw{fun} \bn{x} => \dt{bind }\dt{remove_char} (\kw{fun} _ => ...) ) : \ty{edit unit}
+\end{Verbatim}
+
+
+
+% Most programming languages with rich type systems come with support for popular
+% editors like Emacs and Vim. The infrastructure for this support consists of
+% two parts~\cite{editTimeTactics}:
+
+% \begin{enumerate}
+%   \item a plugin to the editor, often written in the script language of the
+%     editor, such as Emacs Lisp or VimL. This is the \emph{front-end} of the
+%     editor mode.
+%   \item a separate program that does the heavy lifting of the editing features
+%     that work with the language itself.  \mt{ghc-mod} for Haskell,
+%     \mt{agda-mode} for Agda, and the Idris compiler itself would be perfect
+%     examples for this. This is the \emph{back-end} of the editor mode.
+% \end{enumerate}
+
+% Once the front-end plugin is installed in the editor, it provides features like
+% syntax highlighting and automatic indentation. Yet for type-directed
+% interactive editing features, the front-end has the communicate with the
+% back-end, which can take advantage of the compiler API to give meaningful
+% results based on the types in the program.
+
+% The type-directed interactive editing features available to programmers are
+% general-purpose editor actions given by the language developers. These actions
+% include looking up the type of a hole, splitting a pattern into multiple
+% cases, and searching how a hole can be filled.
+
+% While all of these actions make use of the types, the set of available editor
+% action is fixed; there is no easy way for the user to add a new editor action.
+% \TODO{the whole spiel about how my work makes it possible to add a new editor
+% action in Idris itself}
+
+% \begin{figure}[H]
+% \begin{Verbatim}
+% \fn{upperChar} : \ty{Edit ()}
+% \fn{upperChar} =
+%   \kw{do} \fn{setMark}
+%      \bn{s} <- \fn{getSelection}
+%      \fn{deactivateMark}
+%      \fn{insert} (\fn{toUpper} \bn{s})
+% \end{Verbatim}
+% \caption{A simple editor function to capitalize the character under cursor}
+% \label{fig:upperChar}
+% \end{figure}
+
+% When the definition of \fn{upperChar} is desugared and unfolded, i
+
+% \begin{figure}[H]
+% \begin{Verbatim}
+% \fn{upperChar} : \ty{Edit ()}
+% \fn{upperChar} =
+%   \Prim{Bind}
+%     \Prim{SetMark}
+%     (\textbackslash{}_ => \Prim{Bind}
+%              \Prim{GetSelection}
+%              (\textbackslash{}\bn{s} => \Prim{Bind}
+%                       \Prim{DeactivateMark}
+%                       (\textbackslash{}_ => \Prim{Insert} \bn{s})))
+% \end{Verbatim}
+% \caption{A simple editor function to capitalize the character under cursor}
+% \label{fig:upperChar}
+% \end{figure}
+
+% When the compiler receives a command from the editor to run \fn{upperChar}, it will
+% \begin{enumerate}
+%   \item look up the type of \fn{upperChar}
+%   \item ensure that its type is \ty{Edit ()}
+%   \item look up the definition of \fn{upperChar}
+%   \item normalize the definition
+%   \item inspect the constructor at the head
+% \end{enumerate}
+
+
+% Inspection of the head constructor works in the compiler as such:
+% \begin{enumerate}
+%   \item if the head is \Prim{SetMark}:
+%     \begin{enumerate}[label=(\alph*)]
+%       \item send a message to the editor that tells it to set mark, i.e.\ start selection
+%       \item wait for a success message from the editor
+%       \item return \dt{()} in the \ty{Edit} monad
+%     \end{enumerate}
+%   \item if the head is \Prim{DeactivateMark}:
+%     \begin{enumerate}[label=(\alph*)]
+%       \item send a message to the editor that tells it to deactivate mark, i.e.\ finish selection
+%       \item wait for a success message from the editor
+%       \item return \dt{()} in the \ty{Edit} monad
+%     \end{enumerate}
+%   \item if the head is \Prim{GetSelection}:
+%     \begin{enumerate}[label=(\alph*)]
+%       \item send a message to the editor that tells it to deactivate mark, i.e.\ finish selection
+%       \item wait for a success message from the editor, that contains a string
+%         value of the selection in the editor
+%       \item return \dt{()} in the \ty{Edit} monad
+%     \end{enumerate}
+%   \item if the head is \Prim{Bind}:
+%     \begin{enumerate}[label=(\alph*)]
+%       \item send a message for the first action
+%       \item wait for a success message from the editor,
+%         value of the selection in the editor
+%       \item return \dt{()} in the \ty{Edit} monad
+%     \end{enumerate}
+% \end{enumerate}
+
+
+% \TODO{the whole spiel about how the compiler is a server }
+
+% % \input{introduction}
+% % \input{design}
+% % \input{implementation}
+% % \input{applications}
+% % \input{relatedwork}
+% % \input{conclusion}
+
+% \section*{Acknowledgments}
+
+% \TODO{We would like to thank ...}
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{paper}
+
+\end{document}
